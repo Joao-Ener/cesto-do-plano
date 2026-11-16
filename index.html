@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>Cesto do Plano</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#1f3a63">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-column phone app, sticky header with tabs at the bottom; product rows show the guide's own photo strip */
+:root{
+  --navy:#1f3a63; --navy-2:#2d5288; --leaf:#2f8f5b; --heart:#d2445e; --warn:#c7811a;
+  --bg:#f3f6fa; --card:#ffffff; --fg:#17233a; --muted:#5c6b82; --line:#dbe3ee; --chip:#e7eef8; --img:#ffffff;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#9fbbe6; --navy-2:#c3d5f1; --leaf:#5cc68a; --heart:#ff7a90; --warn:#f0b04a;
+  --bg:#0f1622; --card:#172233; --fg:#e7edf6; --muted:#9aa8bd; --line:#26364d; --chip:#20304a; --img:#f4f6f9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --navy:#9fbbe6; --navy-2:#c3d5f1; --leaf:#5cc68a; --heart:#ff7a90; --warn:#f0b04a;
+  --bg:#0f1622; --card:#172233; --fg:#e7edf6; --muted:#9aa8bd; --line:#26364d; --chip:#20304a; --img:#f4f6f9; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(84px + env(safe-area-inset-bottom,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:14px 10px;display:grid;gap:10px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:600;font-size:1.45rem;margin:0;color:var(--navy);letter-spacing:.2px}
+.sub{color:var(--muted);font-size:.82rem}
+h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0;color:var(--navy);text-wrap:balance}
+.search{width:100%;font:inherit;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.search:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--navy-2);outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.chip .n{font-variant-numeric:tabular-nums;opacity:.8}
+.view{display:grid;gap:14px}
+details.cat{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details.cat>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;gap:10px}
+details.cat>summary::-webkit-details-marker{display:none}
+details.cat>summary h2{flex:1;min-width:0}
+.caret{width:18px;height:18px;color:var(--muted);transition:transform .2s}
+details[open]>summary .caret{transform:rotate(90deg)}
+.count{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.items{display:grid}
+.item{border-top:1px solid var(--line);padding:12px 14px;display:grid;gap:8px}
+.item .row{display:flex;gap:10px;align-items:flex-start}
+.item .txt{flex:1;min-width:0}
+.item .name{font-weight:600}
+.item .note{color:var(--muted);font-size:.82rem}
+.strip{display:block;width:100%;background:var(--img);border-radius:10px;border:1px solid var(--line);padding:4px;cursor:zoom-in;overflow:hidden}
+.strip img{display:block;height:74px;width:auto;max-width:100%;object-fit:contain;margin:0 auto}
+.acts{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.ib{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.ib svg{width:22px;height:22px}
+.ib.fav[aria-pressed="true"]{color:var(--heart);border-color:var(--heart)}
+.ib.fav[aria-pressed="true"] svg path{fill:currentColor}
+.ib.cart[aria-pressed="true"]{color:#fff;background:var(--leaf);border-color:var(--leaf)}
+.qty{display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.qty button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-size:1.1rem;cursor:pointer}
+.qty span{min-width:22px;text-align:center;font-weight:600}
+.pill{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--warn);color:var(--warn);margin-left:6px;vertical-align:2px}
+.brandnote{width:100%;font:inherit;font-size:.88rem;padding:8px 10px;border-radius:10px;border:1px dashed var(--line);background:transparent;color:var(--fg)}
+.empty{text-align:center;color:var(--muted);padding:28px 12px;background:var(--card);border:1px dashed var(--line);border-radius:14px}
+/* Lista */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px}
+.progress{height:8px;border-radius:99px;background:var(--chip);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--leaf);transition:width .25s}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.88rem;font-weight:600;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.btn.danger{color:var(--heart);border-color:var(--heart)}
+.addrow{display:flex;gap:8px}
+.addrow input{flex:1;min-width:0}
+.li{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.li:first-of-type{border-top:0}
+.li input[type=checkbox]{width:24px;height:24px;accent-color:var(--leaf);flex-shrink:0}
+.li .txt{flex:1;min-width:0}
+.li.done .name{text-decoration:line-through;color:var(--muted)}
+.li .thumb{width:84px;height:48px;object-fit:contain;background:var(--img);border-radius:8px;flex-shrink:0}
+.grp{font-family:var(--display);font-size:.95rem;color:var(--navy);margin:6px 0 0}
+.x{background:none;border:0;color:var(--muted);font-size:1.3rem;cursor:pointer;width:32px;height:32px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.88rem;z-index:50}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.88rem}
+/* Plano */
+.meal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px}
+.meal .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.macros{display:flex;gap:6px;flex-wrap:wrap}
+.macros span{font-size:.75rem;background:var(--chip);padding:3px 8px;border-radius:99px;font-variant-numeric:tabular-nums}
+.opt{border-left:3px solid var(--chip);padding-left:10px;display:grid;gap:4px}
+.opt b{font-size:.88rem;color:var(--navy-2)}
+.opt ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.9rem}
+.notes{font-size:.88rem;color:var(--muted)}
+.notes ul{margin:6px 0 0;padding-left:18px;display:grid;gap:4px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.summary div{background:var(--chip);border-radius:12px;padding:10px 4px}
+.summary strong{display:block;font-family:var(--display);font-size:1.2rem;color:var(--navy);font-variant-numeric:tabular-nums}
+.summary small{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.4px}
+/* Tab bar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs button{font:inherit;font-size:.78rem;font-weight:600;background:none;border:0;color:var(--muted);padding:9px 4px 10px;display:grid;justify-items:center;gap:2px;cursor:pointer;position:relative}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button[aria-selected="true"]{color:var(--navy)}
+.badge{position:absolute;top:4px;left:calc(50% + 6px);background:var(--leaf);color:#fff;font-size:.68rem;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 5px;font-variant-numeric:tabular-nums}
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:60;background:rgba(10,16,28,.88);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px;cursor:zoom-out}
+.lb figure{margin:0;display:grid;gap:10px;max-width:100%}
+.lb img{background:#fff;border-radius:12px;max-width:100%;max-height:70vh;object-fit:contain}
+.lb figcaption{color:#fff;font-family:var(--display);text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1 id="title">Os meus produtos</h1>
+      <span class="sub">Plano de 22/10/2026</span>
+    </div>
+    <div id="toolbar"></div>
+  </header>
+  <main id="view" class="view" aria-live="polite"></main>
+</div>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tab-produtos" data-tab="produtos" aria-selected="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Produtos</button>
+  <button role="tab" id="tab-lista" data-tab="lista" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.2"/><circle cx="17" cy="20.5" r="1.2"/></svg>Lista de compras<span class="badge" id="badge" hidden>0</span></button>
+  <button role="tab" id="tab-plano" data-tab="plano" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Plano</button>
+</nav>
+
+<script>
+const CATALOG = [{"id":"lacteos","n":"Iogurte, leite e bebida vegetal","items":[{"id":"lacteos-1","n":"Iogurtes magros líquidos","d":"","m":0},{"id":"lacteos-2","n":"Iogurtes magros sólidos","d":"","m":0},{"id":"lacteos-3","n":"Iogurte grego magro (individual)","d":"","m":0},{"id":"lacteos-4","n":"Iogurte grego magro (familiar)","d":"","m":0},{"id":"lacteos-5","n":"Kéfir líquido","d":"","m":0},{"id":"lacteos-6","n":"Kéfir sólido","d":"","m":0},{"id":"lacteos-7","n":"Leite achocolatado","d":"","m":0},{"id":"lacteos-8","n":"Achocolatado de soja","d":"","m":0},{"id":"lacteos-9","n":"Iogurtes e bebidas vegetais","d":"","m":0},{"id":"lacteos-10","n":"Bebida de soja","d":"","m":0},{"id":"lacteos-11","n":"Chocolate em pó","d":"","m":0},{"id":"lacteos-12","n":"Cevada solúvel","d":"","m":0}]},{"id":"proteicas","n":"Opções proteicas","items":[{"id":"proteicas-1","n":"Iogurtes líquidos alta proteína","d":"20–30 g proteína","m":0},{"id":"proteicas-2","n":"Iogurtes sólidos alta proteína","d":"20–30 g proteína","m":0},{"id":"proteicas-3","n":"Leites proteicos alta proteína","d":"20–30 g proteína","m":0},{"id":"proteicas-4","n":"Mousses e pudins alta proteína","d":"20–30 g proteína","m":0},{"id":"proteicas-5","n":"Iogurtes líquidos e leites média proteína","d":"14–19 g proteína","m":0},{"id":"proteicas-6","n":"Mousses e pudins média proteína","d":"14–19 g proteína","m":0},{"id":"proteicas-7","n":"Iogurtes sólidos média proteína","d":"14–19 g proteína","m":0},{"id":"proteicas-8","n":"Iogurtes líquidos 10 g proteína","d":"","m":0},{"id":"proteicas-9","n":"Mousses e pudins 10 g proteína","d":"","m":0},{"id":"proteicas-10","n":"Iogurtes sólidos 10 g proteína","d":"","m":0},{"id":"proteicas-11","n":"Barras proteicas","d":"166–226 kcal · 18–30 g proteína","m":1},{"id":"proteicas-12","n":"Bebidas vegetais proteicas","d":"","m":0},{"id":"proteicas-13","n":"“Iogurtes” vegetais proteicos","d":"","m":0}]},{"id":"queijos","n":"Queijos magros","items":[{"id":"queijos-1","n":"Queijo fatiado","d":"","m":0},{"id":"queijos-2","n":"Queijo ralado","d":"","m":0},{"id":"queijos-3","n":"Babybel light","d":"","m":0},{"id":"queijos-4","n":"Queijo fresco (curta duração)","d":"","m":0},{"id":"queijos-5","n":"Queijo fresco (longa duração)","d":"","m":0},{"id":"queijos-6","n":"Triângulos de queijo","d":"","m":0},{"id":"queijos-7","n":"Queijo para barrar light","d":"","m":0},{"id":"queijos-8","n":"Queijo cottage","d":"","m":0},{"id":"queijos-9","n":"Mozzarella light","d":"","m":0}]},{"id":"recheios","n":"Recheios e gorduras","items":[{"id":"recheios-1","n":"Fiambre de frango","d":"","m":0},{"id":"recheios-2","n":"Fiambre de peru","d":"","m":0},{"id":"recheios-3","n":"Claras de ovo","d":"","m":0},{"id":"recheios-4","n":"Salmão fumado","d":"","m":0},{"id":"recheios-5","n":"Cremes vegetais para barrar","d":"<50% gordura","m":0},{"id":"recheios-6","n":"Guacamole","d":"","m":0},{"id":"recheios-7","n":"Hummus","d":"","m":0},{"id":"recheios-8","n":"Pasta de tremoço","d":"","m":0},{"id":"recheios-9","n":"Manteiga de amendoim","d":"","m":0},{"id":"recheios-10","n":"Pasta de outros frutos gordos","d":"","m":0},{"id":"recheios-11","n":"Pasta de frutos gordos e cacau","d":"","m":0},{"id":"recheios-12","n":"Snacks de frutos gordos","d":"120–240 kcal","m":1}]},{"id":"pao","n":"Tostas, bolachas e pão","items":[{"id":"pao-1","n":"Tostas pequenas","d":"3–5 g cada","m":0},{"id":"pao-2","n":"Tostas médias","d":"9–10 g cada","m":0},{"id":"pao-3","n":"Bolachas Marinheiras","d":"","m":0},{"id":"pao-4","n":"Tortitas","d":"","m":0},{"id":"pao-5","n":"Bolachas <100 kcal","d":"","m":0},{"id":"pao-6","n":"Bolachas 100–150 kcal","d":"","m":0},{"id":"pao-7","n":"Bolachas 150–200 kcal","d":"","m":0},{"id":"pao-8","n":"Bolachas >200 kcal","d":"","m":1},{"id":"pao-9","n":"Wraps 25–40 g","d":"","m":0},{"id":"pao-10","n":"Wraps >60 g","d":"","m":0},{"id":"pao-11","n":"Pão fatiado","d":"22–60 g por fatia","m":0},{"id":"pao-12","n":"Pão sem glúten","d":"","m":0}]},{"id":"cereais","n":"Cereais, granolas e barras","items":[{"id":"cereais-1","n":"Cereais de pequeno-almoço","d":"","m":0},{"id":"cereais-2","n":"Cereais para carga","d":"até 20 g açúcares/100 g","m":0},{"id":"cereais-3","n":"Granolas e muesli","d":"","m":0},{"id":"cereais-4","n":"Barras de cereais","d":"","m":0},{"id":"cereais-5","n":"Farinhas e flocos de aveia","d":"","m":0},{"id":"cereais-6","n":"Papas","d":"","m":0},{"id":"cereais-7","n":"Preparado para panquecas","d":"","m":0}]},{"id":"vegetal","n":"Fontes proteicas vegetais","items":[{"id":"vegetal-1","n":"Tofu","d":"","m":0},{"id":"vegetal-2","n":"Seitan","d":"","m":0},{"id":"vegetal-3","n":"Tempeh","d":"","m":0},{"id":"vegetal-4","n":"Soja texturizada","d":"","m":0},{"id":"vegetal-5","n":"Hambúrgueres vegetais","d":"","m":0},{"id":"vegetal-6","n":"Almôndegas vegetais","d":"","m":0},{"id":"vegetal-7","n":"Outras proteínas vegetais","d":"","m":0}]},{"id":"fruta","n":"Produtos com fruta","items":[{"id":"fruta-1","n":"Sumos de fruta light","d":"","m":0},{"id":"fruta-2","n":"Sumos 100% fruta","d":"","m":0},{"id":"fruta-3","n":"Fruta congelada / açaí","d":"","m":0},{"id":"fruta-4","n":"Polpas e purés de fruta","d":"","m":0},{"id":"fruta-5","n":"Compota light","d":"","m":0},{"id":"fruta-6","n":"Compota 100% fruta","d":"","m":0},{"id":"fruta-7","n":"Snacks de fruta","d":"40–200 kcal/embalagem","m":0},{"id":"fruta-8","n":"Refrigerantes e sumos light","d":"","m":0}]},{"id":"horticolas","n":"Hortícolas e molhos","items":[{"id":"horticolas-1","n":"Sopa só de hortícolas","d":"~40–72 kcal/200 ml","m":0},{"id":"horticolas-2","n":"Sopa com leguminosas","d":"~48–92 kcal/200 ml","m":0},{"id":"horticolas-3","n":"Sopa com batata","d":"~56–142 kcal/200 ml","m":0},{"id":"horticolas-4","n":"Saladas","d":"","m":0},{"id":"horticolas-5","n":"Hortícolas congelados","d":"até 50 kcal/100 g","m":0},{"id":"horticolas-6","n":"Molhos para tempero","d":"5–60 kcal/30 g","m":0},{"id":"horticolas-7","n":"Natas light","d":"","m":0},{"id":"horticolas-8","n":"Natas de soja light","d":"","m":0},{"id":"horticolas-9","n":"Molho de tomate","d":"","m":0}]},{"id":"peixecarne","n":"Peixe e carne","items":[{"id":"peixecarne-1","n":"Peixe congelado rico em ómega-3","d":"","m":0},{"id":"peixecarne-2","n":"Peixe e pescado magro congelado","d":"","m":0},{"id":"peixecarne-3","n":"Carne congelada","d":"","m":0},{"id":"peixecarne-4","n":"Opções para air-fryer","d":"","m":0},{"id":"peixecarne-5","n":"Atum em conserva","d":"posta ou filetes","m":0},{"id":"peixecarne-6","n":"Outras conservas","d":"sardinha, cavala, salmão, pescada, polvo, bacalhau, mexilhão","m":0}]},{"id":"hidratos","n":"Hidratos – produtos práticos","items":[{"id":"hidratos-1","n":"Arroz","d":"","m":0},{"id":"hidratos-2","n":"Batata pré-frita (forno/air-fryer)","d":"","m":0},{"id":"hidratos-3","n":"Gnocchi","d":"","m":0},{"id":"hidratos-4","n":"Batata-doce (forno/air-fryer)","d":"","m":0},{"id":"hidratos-5","n":"Flocos de batata para puré","d":"","m":0},{"id":"hidratos-6","n":"Puré pronto congelado","d":"","m":0},{"id":"hidratos-7","n":"Massas","d":"","m":0},{"id":"hidratos-8","n":"Leguminosas","d":"feijão, grão, lentilhas, ervilhas, feijoca","m":0},{"id":"hidratos-9","n":"Massa de leguminosas","d":"","m":0}]},{"id":"prontas","n":"Refeições prontas","items":[{"id":"prontas-1","n":"Refeições prontas <400 kcal","d":"26–38 g proteína","m":1},{"id":"prontas-2","n":"Refeições prontas 400–500 kcal","d":"25–41 g proteína","m":1},{"id":"prontas-3","n":"Refeições prontas 500–600 kcal","d":"25–42 g proteína","m":1},{"id":"prontas-4","n":"Refeições prontas >600 kcal","d":"30–53 g proteína","m":1}]},{"id":"conforto","n":"Alimentos de conforto","items":[{"id":"conforto-1","n":"Pudins","d":"62–96 kcal/unidade","m":0},{"id":"conforto-2","n":"Mousses","d":"60–105 kcal/unidade","m":0},{"id":"conforto-3","n":"Pipocas","d":"105 kcal/porção 30 g","m":0},{"id":"conforto-4","n":"Chocolate >70%","d":"2 quadrados ≈ 100 kcal","m":0},{"id":"conforto-5","n":"Chocolate individual","d":"45–71 kcal/unidade","m":0},{"id":"conforto-6","n":"Chocolates mini","d":"31–99 kcal/unidade","m":0},{"id":"conforto-7","n":"Mini gelados","d":"14–101 kcal/unidade","m":0},{"id":"conforto-8","n":"Gelados de bola","d":"63–83 kcal/bola","m":0},{"id":"conforto-9","n":"Gelados de fruta","d":"60–98 kcal/unidade","m":0},{"id":"conforto-10","n":"Gelados de gelo","d":"21–80 kcal/unidade","m":0},{"id":"conforto-11","n":"Gelatina zero","d":"10 kcal/unidade","m":0},{"id":"conforto-12","n":"Mini bolos","d":"99 kcal/unidade","m":0},{"id":"conforto-13","n":"Gomas","d":"110 kcal/embalagem","m":0},{"id":"conforto-14","n":"“Batatas fritas” light","d":"66–123 kcal/embalagem","m":0},{"id":"conforto-15","n":"Snacks de tremoço","d":"53 kcal/embalagem","m":0},{"id":"conforto-16","n":"Snacks de leguminosas","d":"½ emb. = 110–129 kcal","m":0},{"id":"conforto-17","n":"Snacks de milho","d":"½ emb. = 117–160 kcal","m":0}]}];
+
+const PLAN = {
+  meals:[
+    {n:"Pequeno-almoço",m:[330,6,70,2],opts:[
+      {t:"Opção 1 · Pão com marmelada + iogurte/sumo",l:["1 iogurte magro OU 1 copo de sumo de fruta light (o iogurte deve ser a opção preferencial)","1 pão pequeno integral/mistura/centeio (60 g) OU 2 fatias de pão de forma (25 g/fatia) OU 1 fatia grande de pão (50 g)","2 c. sobremesa (15 g cada) de doce/marmelada/compota/mel"]},
+      {t:"Opção 2 · Iogurte + aveia/granola + mel",l:["40 g de cereais (6 c. sopa) OU 40 g de aveia/muesli/granola/nestum zero (4 c. sopa) OU 2 Weetabix","1 iogurte sólido/líquido magro","2 c. sobremesa (15 g cada) de doce/marmelada/compota/mel"]}]},
+    {n:"Lanche da manhã",m:[126,5,2,10],opts:[
+      {t:"Escolhe 1",l:["3 tortitas de milho/arroz OU 2 bolachas Marinheiras/Maria OU 2 tostas grandes OU 1 saqueta de tostas extrafinas OU 1 embalagem de tortitas com fio de chocolate OU 1 embalagem de mini panquecas OU 1 barra de cereais OU 1 peça de fruta OU 1 polpa de fruta"]}]},
+    {n:"Almoço",m:[702,49,66,25],opts:[
+      {t:"Prato completo",l:["250 g de hortícolas crus/cozinhados (especiarias, vinagre e limão à vontade; sal, azeite em spray, maionese magra ou creme balsâmico com moderação) OU 1 tigela cheia de sopa (300 ml)","150 g massa OU 150 g arroz (3 c. servir) OU 150 g batata/batata-doce assada (2 c. servir) OU 180 g feijão (3½ c. servir) · peso cozinhado","150 g de peixe (+1 c. sobremesa de azeite no peixe magro) OU 100 g de salmão OU 150 g de carne branca sem pele OU 150 g de carne vermelha magra","Água com ou sem gás OU refrigerante sem açúcar OU Frize sabores OU Pleno/Luso sem açúcar","1 porção de fruta"]}],
+     notes:["Usar azeite em spray para controlar a gordura adicionada.","Preferir carne branca sem pele e excluir a carne gorda.","Peixe 3–4x por semana, pelo menos 1x peixe gordo.","Variar frutas e hortícolas.","Usar sal iodado.","Leguminosas (feijão, grão, lentilhas) no prato ou na sopa, mínimo 3x por semana."]},
+    {n:"Lanche da tarde",m:[458,29,73,4],opts:[
+      {t:"Opção 1 · Iogurte + cereais + fruta",l:["2 iogurtes sólidos/líquidos magros OU 4 c. sopa (200 g) de iogurte grego magro","40 g de cereais OU 40 g de aveia/muesli/granola/nestum zero OU 2 Weetabix","1 c. sobremesa (15 g) de doce/marmelada/compota/mel","1 porção de fruta"]},
+      {t:"Opção 2 · Pão misto",l:["1 pão pequeno (60 g) OU 2 fatias de pão de forma OU 1 fatia grande (50 g) OU 2 panquecas OU 1 wrap (40 g)","1 queijo fresco light OU 1 fatia de queijo magro OU 2 triângulos de queijo magro OU 2 c. sobremesa de queijo de barrar light OU 1 fatia de salmão fumado","1–2 fatias de fiambre de aves","1 porção de fruta"]},
+      {t:"Opção 3 · Leite achocolatado + bolachas",l:["1 iogurte/leite médio em proteína OU 2 iogurtes magros","3 tortitas OU 2 bolachas Marinheiras/Maria OU 2 tostas grandes OU 1 saqueta de tostas extrafinas OU 1 embalagem de tortitas com chocolate OU mini panquecas OU 1 barra de cereais","1 porção de fruta"]}]},
+    {n:"Jantar",m:[828,54,68,36],opts:[
+      {t:"Opção 1 · Prato igual ao almoço + conforto",l:["Prato como no almoço","1 dose de alimento de conforto (ver lista de compras)"]},
+      {t:"Opção 2 · Hambúrguer, wrap ou sandes",l:["150–200 g de hortícolas OU 1 tigela cheia de sopa (300 ml)","100 g de carne (hambúrguer caseiro de carne magra/meio-gorda) OU 1 lata de atum ao natural + 1 ovo + 2 c. sobremesa de queijo creme light ou maionese magra","1 ovo (não frito em gordura)","1 pão de hambúrguer (~80 g) OU 1 wrap grande (>60 g) OU 1 pão médio integral/cereais/centeio","1 peça de fruta OU 1 copo de sumo 100%","1 dose de alimento de conforto (ver lista de compras)"]}]}
+  ],
+  fruit:"1 porção de fruta = ½ meloa/manga/dióspiro/papaia OU 1 banana pequena/maçã/kiwi/laranja/pera/pêssego/romã OU 2 tangerinas/figos OU 3 ameixas/damascos/nêsperas OU 2 fatias de melancia/melão/ananás OU 2 mãos de cerejas ou frutos silvestres OU 10 morangos/uvas."
+};
+
+/* ---------- state ---------- */
+const KEY="cesto-plano-v1";
+let S={fav:{},cart:{},bought:{},note:{},custom:[]};
+try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} updateBadge();}
+
+const ITEMS={}; CATALOG.forEach(c=>c.items.forEach(i=>{i.cat=c.id;ITEMS[i.id]=i;}));
+const CATNAME=Object.fromEntries(CATALOG.map(c=>[c.id,c.n]));
+let tab="produtos", filter="todos", query="", openCats=new Set();
+try{openCats=new Set(JSON.parse(sessionStorage.getItem(KEY+"-open")||"[]"));}catch(e){}
+
+const $=s=>document.querySelector(s);
+const IMG1=/^(lacteos|proteicas|queijos|recheios|pao|cereais)-/;
+const imgPath=id=>(IMG1.test(id)?"img/":"img2/")+id+".webp";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const HEART='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.2-9A5 5 0 0 1 12 6a5 5 0 0 1 9.2 5C19 15.6 12 20 12 20z"/></svg>';
+const CART='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1.2"/><circle cx="17" cy="20.5" r="1.2"/></svg>';
+const CARET='<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>';
+
+function cartIds(){return Object.keys(S.cart).filter(id=>S.cart[id]>0&&ITEMS[id]);}
+function updateBadge(){const n=Object.keys(S.cart).filter(id=>S.cart[id]>0).filter(id=>!S.bought[id]).length;const b=$("#badge");b.textContent=n;b.hidden=n===0;}
+
+let toastT; function toast(msg){let t=$(".toast"); if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);} t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200);}
+
+/* ---------- Produtos ---------- */
+function toolbarProdutos(){
+  const nf=Object.keys(S.fav).filter(k=>S.fav[k]).length, nc=cartIds().length;
+  $("#toolbar").innerHTML=`<input id="q" class="search" type="search" placeholder="Procurar (ex.: iogurte, wrap, atum)" value="${esc(query)}" aria-label="Procurar produtos">
+  <div class="chips" role="group" aria-label="Filtro">
+    <button class="chip" data-f="todos" aria-pressed="${filter==="todos"}">Todos</button>
+    <button class="chip" data-f="fav" aria-pressed="${filter==="fav"}">Gosto <span class="n">${nf}</span></button>
+    <button class="chip" data-f="cart" aria-pressed="${filter==="cart"}">Para comprar <span class="n">${nc}</span></button>
+  </div>`;
+  $("#q").addEventListener("input",e=>{query=e.target.value;renderView();});
+  document.querySelectorAll(".chip[data-f]").forEach(b=>b.onclick=()=>{filter=b.dataset.f;render();});
+}
+function itemHTML(i){
+  const q=S.cart[i.id]||0, f=!!S.fav[i.id];
+  return `<div class="item" data-id="${i.id}">
+    <div class="row">
+      <div class="txt"><div class="name">${esc(i.n)}${i.m?'<span class="pill" title="Modera o consumo">Moderar</span>':""}</div>${i.d?`<div class="note">${esc(i.d)}</div>`:""}</div>
+      <div class="acts">
+        <button class="ib fav" aria-pressed="${f}" aria-label="Gosto de ${esc(i.n)}" data-act="fav">${HEART}</button>
+        ${q>0?`<div class="qty"><button data-act="dec" aria-label="Menos">−</button><span>${q}</span><button data-act="inc" aria-label="Mais">+</button></div>`:""}
+        <button class="ib cart" aria-pressed="${q>0}" aria-label="${q>0?"Tirar da lista":"Pôr na lista de compras"}" data-act="cart">${CART}</button>
+      </div>
+    </div>
+    <button class="strip" data-act="zoom" aria-label="Ver produtos sugeridos: ${esc(i.n)}"><img loading="lazy" src="${imgPath(i.id)}" alt="Produtos sugeridos: ${esc(i.n)}"></button>
+    ${(f||q>0||S.note[i.id])?`<input class="brandnote" id="note-${i.id}" data-act="note" placeholder="Marca/sabor preferido (ex.: Mimosa morango)" value="${esc(S.note[i.id]||"")}">`:""}
+  </div>`;
+}
+function renderProdutos(){
+  const qn=norm(query.trim());
+  let html="", total=0;
+  CATALOG.forEach(c=>{
+    let its=c.items.filter(i=>{
+      if(filter==="fav"&&!S.fav[i.id])return false;
+      if(filter==="cart"&&!(S.cart[i.id]>0))return false;
+      if(qn&&!norm(i.n+" "+i.d+" "+c.n+" "+(S.note[i.id]||"")).includes(qn))return false;
+      return true;});
+    if(!its.length)return;
+    total+=its.length;
+    const open=qn||filter!=="todos"||openCats.has(c.id);
+    const nsel=c.items.filter(i=>S.fav[i.id]||S.cart[i.id]>0).length;
+    html+=`<details class="cat" data-cat="${c.id}" ${open?"open":""}><summary><h2>${esc(c.n)}</h2><span class="count">${nsel?nsel+" escolhidos · ":""}${its.length}</span>${CARET}</summary><div class="items">${its.map(itemHTML).join("")}</div></details>`;
+  });
+  if(!total) html=`<div class="empty">${filter==="fav"?"Ainda não marcaste nenhum produto com o coração. Toca no coração dos produtos de que gostas.":filter==="cart"?"A lista está vazia. Toca no carrinho de um produto para o pôr na lista.":"Nenhum produto encontrado."}</div>`;
+  $("#view").innerHTML=html;
+  document.querySelectorAll("details.cat").forEach(d=>d.addEventListener("toggle",()=>{
+    if(qn||filter!=="todos")return; d.open?openCats.add(d.dataset.cat):openCats.delete(d.dataset.cat);
+    try{sessionStorage.setItem(KEY+"-open",JSON.stringify([...openCats]));}catch(e){}
+  }));
+}
+function itemAction(id,act,el){
+  if(act==="fav"){S.fav[id]=!S.fav[id]; if(!S.fav[id])delete S.fav[id];}
+  else if(act==="cart"){ if(S.cart[id]>0){delete S.cart[id];delete S.bought[id];} else {S.cart[id]=1; toast("Adicionado à lista de compras");}}
+  else if(act==="inc"){S.cart[id]=(S.cart[id]||0)+1;}
+  else if(act==="dec"){S.cart[id]=(S.cart[id]||1)-1; if(S.cart[id]<=0){delete S.cart[id];delete S.bought[id];}}
+  else if(act==="zoom"){const i=ITEMS[id];return lightbox(`${imgPath(id)}`,i.n);}
+  save();
+  const node=el.closest(".item"); if(node){node.outerHTML=itemHTML(ITEMS[id]);}
+  toolbarProdutos(); refreshCounts();
+}
+function refreshCounts(){
+  document.querySelectorAll("details.cat").forEach(d=>{
+    const c=CATALOG.find(x=>x.id===d.dataset.cat); const nsel=c.items.filter(i=>S.fav[i.id]||S.cart[i.id]>0).length;
+    const n=d.querySelectorAll(".item").length; d.querySelector(".count").textContent=(nsel?nsel+" escolhidos · ":"")+n;});
+}
+function lightbox(src,cap){
+  const d=document.createElement("div");d.className="lb";d.setAttribute("role","dialog");d.setAttribute("aria-label",cap);
+  d.innerHTML=`<figure><img src="${src}" alt="${esc(cap)}"><figcaption>${esc(cap)} · toca para fechar</figcaption></figure>`;
+  d.onclick=()=>d.remove(); document.addEventListener("keydown",function k(e){if(e.key==="Escape"){d.remove();document.removeEventListener("keydown",k);}});
+  document.body.appendChild(d);
+}
+
+/* ---------- Lista ---------- */
+let confirmClear=false;
+function listText(){
+  const lines=["Lista de compras"];
+  const groups=groupCart();
+  groups.forEach(([cat,rows])=>{lines.push("",cat.toUpperCase());rows.forEach(r=>lines.push(`${r.done?"✔":"•"} ${r.qty>1?r.qty+"× ":""}${r.name}${r.note?" ("+r.note+")":""}`));});
+  return lines.join("\n");
+}
+function groupCart(){
+  const map=new Map();
+  CATALOG.forEach(c=>c.items.forEach(i=>{ if(S.cart[i.id]>0){ if(!map.has(c.n))map.set(c.n,[]); map.get(c.n).push({id:i.id,name:i.n,note:S.note[i.id]||"",qty:S.cart[i.id],done:!!S.bought[i.id],img:`${imgPath(i.id)}`});}}));
+  const extra=S.custom.map(x=>({id:x.id,name:x.n,note:"",qty:S.cart[x.id]||1,done:!!S.bought[x.id],custom:true}));
+  if(extra.length) map.set("Outros",extra);
+  return [...map.entries()];
+}
+function renderLista(){
+  $("#toolbar").innerHTML="";
+  const groups=groupCart(); const all=groups.flatMap(g=>g[1]); const done=all.filter(r=>r.done).length;
+  const favNotIn=Object.keys(S.fav).filter(id=>S.fav[id]&&!(S.cart[id]>0)&&ITEMS[id]).length;
+  let html=`<section class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h2>No supermercado</h2><span class="count">${done} de ${all.length} no cesto</span></div>
+    <div class="progress" aria-hidden="true"><i style="width:${all.length?Math.round(done/all.length*100):0}%"></i></div>
+    <form class="addrow" id="addform"><input class="search" id="newitem" placeholder="Acrescentar outro produto (ex.: ovos, bananas)" aria-label="Novo produto"><button class="btn primary" type="submit">Adicionar</button></form>
+    <div class="btns">
+      ${favNotIn?`<button class="btn" id="addfav">Pôr os ${favNotIn} favoritos na lista</button>`:""}
+      ${all.length?`<button class="btn" id="copy">Copiar lista</button><a class="btn" id="wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(listText())}">Enviar por WhatsApp</a>`:""}
+      ${done?`<button class="btn" id="clearDone">Retirar os já comprados</button>`:""}
+      ${all.length?(confirmClear?`<span class="confirm">Esvaziar a lista toda? <button class="btn danger" id="clearYes">Sim, esvaziar</button><button class="btn" id="clearNo">Cancelar</button></span>`:`<button class="btn danger" id="clearAll">Esvaziar lista</button>`):""}
+    </div></section>`;
+  if(!all.length){
+    html+=`<div class="empty">A lista de compras está vazia.<br>Vai a <b>Produtos</b> e toca no carrinho dos produtos que precisas de comprar${favNotIn?", ou usa o botão acima para juntar os teus favoritos":""}.</div>`;
+  } else {
+    html+=`<section class="panel">`+groups.map(([cat,rows])=>`<h3 class="grp">${esc(cat)}</h3>`+rows.map(r=>`
+      <label class="li ${r.done?"done":""}" data-id="${r.id}">
+        <input type="checkbox" id="chk-${r.id}" ${r.done?"checked":""}>
+        ${r.img?`<img class="thumb" src="${r.img}" alt="" loading="lazy">`:""}
+        <span class="txt"><span class="name">${r.qty>1?`<b>${r.qty}×</b> `:""}${esc(r.name)}</span>${r.note?`<br><span class="note">${esc(r.note)}</span>`:""}</span>
+        ${r.custom?`<button class="x" data-del="${r.id}" aria-label="Remover ${esc(r.name)}">×</button>`:""}
+      </label>`).join("")).join("")+`</section>`;
+  }
+  $("#view").innerHTML=html;
+  $("#addform").onsubmit=e=>{e.preventDefault();const v=$("#newitem").value.trim();if(!v)return;const id="c"+Date.now().toString(36);S.custom.push({id,n:v});S.cart[id]=1;save();renderLista();$("#newitem").focus();};
+  $("#addfav")&&($("#addfav").onclick=()=>{Object.keys(S.fav).forEach(id=>{if(S.fav[id]&&ITEMS[id]&&!(S.cart[id]>0))S.cart[id]=1;});save();renderLista();toast("Favoritos adicionados à lista");});
+  $("#copy")&&($("#copy").onclick=()=>{const t=listText();
+    const fallback=()=>{const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Lista copiada");}catch(e){toast("Não foi possível copiar");}ta.remove();};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>toast("Lista copiada"),fallback);else fallback();});
+  $("#clearDone")&&($("#clearDone").onclick=()=>{Object.keys(S.bought).forEach(id=>{if(S.bought[id]){delete S.cart[id];delete S.bought[id];S.custom=S.custom.filter(x=>x.id!==id);}});save();renderLista();toast("Comprados retirados da lista");});
+  $("#clearAll")&&($("#clearAll").onclick=()=>{confirmClear=true;renderLista();});
+  $("#clearNo")&&($("#clearNo").onclick=()=>{confirmClear=false;renderLista();});
+  $("#clearYes")&&($("#clearYes").onclick=()=>{confirmClear=false;S.cart={};S.bought={};S.custom=[];save();renderLista();toast("Lista esvaziada");});
+  document.querySelectorAll(".li input[type=checkbox]").forEach(cb=>cb.onchange=()=>{const id=cb.closest(".li").dataset.id;if(cb.checked)S.bought[id]=true;else delete S.bought[id];save();renderLista();});
+  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{e.preventDefault();const id=b.dataset.del;S.custom=S.custom.filter(x=>x.id!==id);delete S.cart[id];delete S.bought[id];save();renderLista();});
+}
+
+/* ---------- Plano ---------- */
+function renderPlano(){
+  $("#toolbar").innerHTML="";
+  const mac=m=>`<div class="macros"><span>${m[0]} kcal</span><span>Proteína ${m[1]} g</span><span>Hidratos ${m[2]} g</span><span>Gordura ${m[3]} g</span></div>`;
+  let html=`<section class="panel"><h2>Resumo diário</h2>
+    <div class="summary"><div><strong>2445</strong><small>kcal</small></div><div><strong>144 g</strong><small>Proteína</small></div><div><strong>278 g</strong><small>Hidratos</small></div><div><strong>78 g</strong><small>Gordura</small></div></div>
+    <div class="notes">Em cada refeição escolhe 1 opção de cada linha para construíres uma refeição completa. Os pesos das refeições principais são do alimento já preparado. Hidratação: 2,5–3,5 L de líquidos por dia; a urina não deve ser mais escura do que o nível 3.</div></section>`;
+  PLAN.meals.forEach(m=>{
+    html+=`<section class="meal"><div class="head"><h2>${m.n}</h2></div>${mac(m.m)}
+      ${m.opts.map(o=>`<div class="opt"><b>${esc(o.t)}</b><ul>${o.l.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}
+      ${m.notes?`<div class="notes"><b>Notas</b><ul>${m.notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}</section>`;
+  });
+  html+=`<section class="panel"><h2>Porção de fruta</h2><div class="notes">${esc(PLAN.fruit)}</div></section>
+  <p class="sub" style="text-align:center">Plano alimentar preparado pelo nutricionista Pedro Salazar. Objetivo: otimização da composição corporal.</p>`;
+  $("#view").innerHTML=html;
+}
+
+/* ---------- shell ---------- */
+const TITLES={produtos:"Os meus produtos",lista:"Lista de compras",plano:"Plano alimentar"};
+function renderView(){ if(tab==="produtos")renderProdutos(); else if(tab==="lista")renderLista(); else renderPlano(); }
+function render(){
+  $("#title").textContent=TITLES[tab];
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
+  if(tab==="produtos")toolbarProdutos(); renderView(); updateBadge();
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;confirmClear=false;try{history.replaceState(null,"","#"+tab);}catch(e){} render();window.scrollTo(0,0);});
+$("#view").addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b||b.dataset.act==="note")return;const it=b.closest(".item");if(!it)return;e.preventDefault();itemAction(it.dataset.id,b.dataset.act,b);});
+$("#view").addEventListener("input",e=>{if(e.target.dataset&&e.target.dataset.act==="note"){const id=e.target.closest(".item").dataset.id;const v=e.target.value;if(v)S.note[id]=v;else delete S.note[id];save();}});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(TITLES[h]&&h!==tab){tab=h;render();}});
+{const h=location.hash.slice(1); if(TITLES[h])tab=h;}
+if(!openCats.size) openCats.add(CATALOG[0].id);
+render();
+if("serviceWorker" in navigator && !/claude|claudeusercontent/.test(location.hostname)){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+</script>
+
+</body>
+</html>
