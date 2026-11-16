@@ -325,7 +325,7 @@ function renderPlano(){
       ${m.notes?`<div class="notes"><b>Notas</b><ul>${m.notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}</section>`;
   });
   html+=`<section class="panel"><h2>Porção de fruta</h2><div class="notes">${esc(PLAN.fruit)}</div></section>
-  <p class="sub" style="text-align:center">Plano alimentar preparado pelo nutricionista Pedro Salazar. Objetivo: otimização da composição corporal.</p>`;
+  <p class="sub" style="text-align:center">Plano alimentar preparado pelo nutricionista. Objetivo: otimização da composição corporal.</p>`;
   $("#view").innerHTML=html;
 }
 
